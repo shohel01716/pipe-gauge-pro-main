@@ -62,10 +62,10 @@ export default function Home() {
             </div>
             <div>
               <h1 className="text-xl font-bold text-foreground">PipeGauge</h1>
-              {/* <p className="text-sm text-muted-foreground">Pro</p> */}
+              <p className="text-sm text-muted-foreground">Pro</p>
             </div>
           </div>
-          {/* <UsageBadge /> */}
+          <UsageBadge />
         </div>
 
         <motion.p 
@@ -144,15 +144,15 @@ export default function Home() {
               <div className="text-lg">Saved Measurements</div>
               <div className="text-sm text-muted-foreground font-normal">View history & favorites</div>
             </div>
-            {/* {!isPro && (
+            {!isPro && (
               <span className="text-xs bg-accent/10 text-accent px-2 py-1 rounded-full font-medium">
                 PRO
               </span>
-            )} */}
+            )}
           </Button>
         </motion.div>
 
-        {/* {!isPro && (
+        {!isPro && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -173,13 +173,13 @@ export default function Home() {
               </div>
             </Button>
           </motion.div>
-        )} */}
+        )}
       </main>
 
       {/* Footer */}
       <footer className="fixed bottom-0 left-0 right-0 p-5 safe-area-bottom">
         <p className="text-center text-xs text-muted-foreground">
-          PipeGauge v1.0 • Professional Pipe Measurement 
+          PipeGauge Pro v1.0 • Professional Pipe Measurement 
         </p>
       </footer>
     </div>

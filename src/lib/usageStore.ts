@@ -18,11 +18,10 @@ export function getUsageData(): UsageData {
   if (stored) {
     const data = JSON.parse(stored) as UsageData;
     if (data.date === getTodayKey()) {
-      data.isPro = true; // default to pro for existing users
       return data;
     }
   }
-  return { date: getTodayKey(), count: 0, isPro: true }; // default to pro for existing users
+  return { date: getTodayKey(), count: 0, isPro: false }; // default to pro for existing users
 }
 
 export function incrementUsage(): UsageData {
