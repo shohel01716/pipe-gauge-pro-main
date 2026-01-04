@@ -169,7 +169,7 @@ export default function Home() {
               </div>
               <div className="text-left">
                 <div className="text-lg">Upgrade to Pro</div>
-                <div className="text-sm opacity-70 font-normal">Unlimited measurements • $29.99/yr</div>
+                <div className="text-sm opacity-70 font-normal">Unlimited measurements • Lifetime Access</div>
               </div>
             </Button>
           </motion.div>

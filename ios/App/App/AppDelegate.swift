@@ -8,6 +8,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
+        // Initialize In-App Purchase Manager
+        IAPManager.shared.initialize { success in
+            if success {
+                print("IAP initialized successfully")
+            } else {
+                print("IAP initialization failed")
+            }
+        }
+        
         return true
     }
 

@@ -3,19 +3,22 @@ import { Button } from "@/components/ui/button";
 import { 
   ArrowLeft, 
   Check, 
-  Infinity, 
+  Infinity as InfinityIcon, 
   Bookmark, 
   Wifi, 
   FileText,
   Wrench,
-  Shield
+  Shield,
+  Loader2
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { setProStatus } from "@/lib/usageStore";
 import { toast } from "sonner";
+import { iapService, LIFETIME_PRO_PRODUCT_ID } from "@/lib/iapService";
+import { useState, useEffect } from "react";
 
 const PRO_FEATURES = [
-  { icon: Infinity, text: "Unlimited pipe measurements" },
+  { icon: InfinityIcon, text: "Unlimited pipe measurements" },
   { icon: Wrench, text: "Thread pitch visual matching (NPT, BSP, Metric)" },
   { icon: Bookmark, text: "Save and favorite common sizes" },
   { icon: Wifi, text: "Works offline on job sites" },
@@ -24,22 +27,88 @@ const PRO_FEATURES = [
 
 export default function Upgrade() {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+  const [isRestoring, setIsRestoring] = useState(false);
+  const [productPrice, setProductPrice] = useState("$29.99");
 
-  const handleUpgrade = () => {
-    // In production, this triggers Apple In-App Purchase
-    // For demo purposes, we enable Pro status and navigate to success screen
-    setProStatus(true);
-    navigate("/pro-unlocked");
+  useEffect(() => {
+    // Initialize IAP and fetch product info
+    const init = async () => {
+      await iapService.initialize();
+      const product = await iapService.getProduct(LIFETIME_PRO_PRODUCT_ID);
+      if (product) {
+        setProductPrice(product.price);
+      }
+    };
+    init();
+  }, []);
+
+  const handleUpgrade = async () => {
+    if (isLoading) return;
+    
+    setIsLoading(true);
+    toast.info("Processing purchase...", {
+      description: "Contacting App Store...",
+    });
+
+    try {
+      const result = await iapService.purchase(LIFETIME_PRO_PRODUCT_ID);
+      
+      if (result.success) {
+        // Purchase successful, enable Pro status
+        setProStatus(true);
+        toast.success("Purchase successful!", {
+          description: "Pro features unlocked",
+        });
+        navigate("/pro-unlocked");
+      } else {
+        // Purchase failed or cancelled
+        toast.error("Purchase failed", {
+          description: result.error || "Unable to complete purchase",
+        });
+      }
+    } catch (error) {
+      console.error("Purchase error:", error);
+      toast.error("Purchase error", {
+        description: "Please try again",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleRestore = () => {
+  const handleRestore = async () => {
+    if (isRestoring) return;
+    
+    setIsRestoring(true);
     toast.info("Checking for previous purchases...", {
       description: "Contacting App Store...",
     });
-    // In production, this would restore purchases from App Store
-    setTimeout(() => {
-      toast.error("No previous purchase found");
-    }, 1500);
+
+    try {
+      const result = await iapService.restorePurchases();
+      
+      if (result.success) {
+        // Restore successful
+        setProStatus(true);
+        toast.success("Purchase restored!", {
+          description: "Pro features unlocked",
+        });
+        navigate("/pro-unlocked");
+      } else {
+        // No previous purchase found
+        toast.error("No previous purchase found", {
+          description: result.error || "Please make a new purchase",
+        });
+      }
+    } catch (error) {
+      console.error("Restore error:", error);
+      toast.error("Restore failed", {
+        description: "Please try again",
+      });
+    } finally {
+      setIsRestoring(false);
+    }
   };
 
   return (
@@ -111,12 +180,13 @@ export default function Upgrade() {
           transition={{ delay: 0.5 }}
           className="bg-primary rounded-2xl p-6 text-center shadow-tool mb-6"
         >
-          <div className="flex items-baseline justify-center gap-1 mb-2">
-            <span className="text-4xl font-bold text-primary-foreground">$29.99</span>
-            <span className="text-primary-foreground/70 text-lg">/ year</span>
+          <div className="flex flex-col items-center mb-2">
+            <div className="text-sm text-primary-foreground/70 mb-1">One-time payment</div>
+            <span className="text-4xl font-bold text-primary-foreground">{productPrice}</span>
+            <span className="text-primary-foreground/70 text-sm mt-1">Lifetime Access</span>
           </div>
           <p className="text-primary-foreground/80 text-sm">
-            Less than the cost of one wrong fitting.
+            Pay once. Use forever. No subscriptions.
           </p>
         </motion.div>
 
@@ -135,15 +205,24 @@ export default function Upgrade() {
             size="xl"
             className="w-full text-base font-bold"
             onClick={handleUpgrade}
+            disabled={isLoading || isRestoring}
           >
-            Upgrade to Pro
+            {isLoading ? (
+              <>
+                <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                Processing...
+              </>
+            ) : (
+              "Get Lifetime Access"
+            )}
           </Button>
 
           <button
             onClick={handleRestore}
-            className="w-full text-center text-sm text-muted-foreground py-3 font-medium"
+            disabled={isLoading || isRestoring}
+            className="w-full text-center text-sm text-muted-foreground py-3 font-medium disabled:opacity-50"
           >
-            Restore Purchase
+            {isRestoring ? "Restoring..." : "Restore Purchase"}
           </button>
         </motion.div>
 
