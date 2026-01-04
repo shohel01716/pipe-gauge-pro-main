@@ -1,0 +1,33 @@
+workflows:
+  ios-ipa:
+    name: iOS IPA Build
+    max_build_duration: 60
+    environment:
+      node: 22
+      xcode: latest
+      vars:
+        TEAM_ID: "PD9LT9BXCV"
+    scripts:
+      - npm install
+      - npm run build
+      - npx cap add ios || true
+      - npx cap sync ios
+      - |
+        cat > "$CM_BUILD_DIR/exportOptions.plist" <<'PLIST'
+        <?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+        <plist version="1.0">
+        <dict>
+          <key>method</key><string>app-store</string>
+          <key>signingStyle</key><string>automatic</string>
+          <key>destination</key><string>export</string>
+          <key>compileBitcode</key><false/>
+          <key>uploadBitcode</key><false/>
+        </dict>
+        </plist>
+        PLIST
+      - xcodebuild -project ios/App/App.xcodeproj -scheme App -configuration Release -archivePath "$CM_BUILD_DIR/build/App.xcarchive" archive -allowProvisioningUpdates DEVELOPMENT_TEAM="$TEAM_ID"
+      - xcodebuild -exportArchive -archivePath "$CM_BUILD_DIR/build/App.xcarchive" -exportOptionsPlist "$CM_BUILD_DIR/exportOptions.plist" -exportPath "$CM_BUILD_DIR/build"
+    artifacts:
+      - build/*.ipa
+      - build/App.xcarchive

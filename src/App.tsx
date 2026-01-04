@@ -1,0 +1,38 @@
+import { Toaster } from "@/components/ui/toaster";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Index from "./pages/Index";
+import Measure from "./pages/Measure";
+import ManualEntry from "./pages/ManualEntry";
+import Results from "./pages/Results";
+import SavedMeasurements from "./pages/SavedMeasurements";
+import Upgrade from "./pages/Upgrade";
+import ProUnlocked from "./pages/ProUnlocked";
+import NotFound from "./pages/NotFound";
+
+const queryClient = new QueryClient();
+
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <TooltipProvider>
+      <Toaster />
+      <Sonner position="top-center" />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Index />} />
+          <Route path="/measure" element={<Measure />} />
+          <Route path="/manual" element={<ManualEntry />} />
+          <Route path="/results" element={<Results />} />
+          <Route path="/saved" element={<SavedMeasurements />} />
+          <Route path="/upgrade" element={<Upgrade />} />
+          <Route path="/pro-unlocked" element={<ProUnlocked />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
+    </TooltipProvider>
+  </QueryClientProvider>
+);
+
+export default App;

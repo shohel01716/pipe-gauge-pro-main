@@ -1,0 +1,194 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap');
+
+@layer base {
+  :root {
+    /* PipeGauge Pro Industrial Theme */
+    --background: 220 13% 95%; /* Light Steel Gray #F3F4F6 */
+    --foreground: 220 43% 11%; /* Charcoal #111827 */
+
+    --card: 0 0% 100%;
+    --card-foreground: 220 43% 11%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 43% 11%;
+
+    --primary: 211 63% 16%; /* Deep Industrial Blue #0F2A44 */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 220 9% 46%; /* Slate Gray #6B7280 */
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 220 13% 91%;
+    --muted-foreground: 220 9% 46%;
+
+    --accent: 174 65% 47%; /* Precision Turquoise #2EC4B6 */
+    --accent-foreground: 220 43% 11%;
+
+    --warning: 38 92% 50%; /* Amber #F59E0B */
+    --warning-foreground: 220 43% 11%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 13% 85%;
+    --input: 220 13% 85%;
+    --ring: 174 65% 47%;
+
+    --radius: 0.75rem;
+
+    /* Custom tokens */
+    --gradient-industrial: linear-gradient(135deg, hsl(211 63% 16%) 0%, hsl(211 63% 22%) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(174 65% 47%) 0%, hsl(174 65% 40%) 100%);
+    --shadow-tool: 0 4px 20px -4px hsl(211 63% 16% / 0.25);
+    --shadow-card: 0 2px 12px -2px hsl(220 43% 11% / 0.08);
+    --shadow-button: 0 4px 14px -4px hsl(211 63% 16% / 0.35);
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 174 65% 47%;
+  }
+
+  .dark {
+    --background: 220 43% 8%;
+    --foreground: 220 13% 95%;
+
+    --card: 220 43% 11%;
+    --card-foreground: 220 13% 95%;
+
+    --popover: 220 43% 11%;
+    --popover-foreground: 220 13% 95%;
+
+    --primary: 174 65% 47%;
+    --primary-foreground: 220 43% 11%;
+
+    --secondary: 220 9% 36%;
+    --secondary-foreground: 220 13% 95%;
+
+    --muted: 220 43% 15%;
+    --muted-foreground: 220 9% 56%;
+
+    --accent: 174 65% 47%;
+    --accent-foreground: 220 43% 11%;
+
+    --warning: 38 92% 50%;
+    --warning-foreground: 220 43% 11%;
+
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 43% 18%;
+    --input: 220 43% 18%;
+    --ring: 174 65% 47%;
+
+    --sidebar-background: 220 43% 8%;
+    --sidebar-foreground: 220 13% 95%;
+    --sidebar-primary: 174 65% 47%;
+    --sidebar-primary-foreground: 220 43% 11%;
+    --sidebar-accent: 220 43% 15%;
+    --sidebar-accent-foreground: 220 13% 95%;
+    --sidebar-border: 220 43% 18%;
+    --sidebar-ring: 174 65% 47%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    user-select: none;
+  }
+
+  /* iOS safe areas */
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+@layer components {
+  .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .measurement-display {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  .industrial-button {
+    @apply relative overflow-hidden transition-all duration-200 active:scale-[0.98];
+  }
+
+  .industrial-button::after {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-t from-black/10 to-transparent pointer-events-none;
+  }
+
+  .glass-card {
+    @apply bg-card/80 backdrop-blur-xl border border-border/50;
+  }
+
+  .measurement-ring {
+    animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes pulse-ring {
+    0%, 100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.8;
+      transform: scale(1.02);
+    }
+  }
+
+  .slide-up {
+    animation: slideUp 0.3s ease-out;
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .fade-in {
+    animation: fadeIn 0.2s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
